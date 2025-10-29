@@ -1,2 +1,2 @@
-# currently-listening-to
-A web app to display the song I'm currently listening to
+# expert-parakeet
+see what i'm currently listening to and be blessed by my amazing music taste!
