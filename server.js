@@ -39,6 +39,8 @@ async function getAccessToken() {
   return accessToken;
 }
 
+let lastTrack = null;
+
 app.get("/api/now-playing", async (req, res) => {
   try {
     const token = await getAccessToken();
@@ -51,12 +53,12 @@ app.get("/api/now-playing", async (req, res) => {
     );
 
     if (response.status === 204 || !response.data.item) {
-      return res.json({ isPlaying: false });
+      return res.json(lastTrack || { isPlaying: false });
     }
 
     const { item, is_playing, progress_ms } = response.data;
 
-    res.json({
+    const trackData = {
       isPlaying: is_playing,
       title: item.name,
       artist: item.artists.map((a) => a.name).join(", "),
@@ -64,10 +66,14 @@ app.get("/api/now-playing", async (req, res) => {
       albumArt: item.album.images[0]?.url,
       progress: progress_ms,
       duration: item.duration_ms,
-    });
+    };
+
+    lastTrack = { ...trackData, isPlaying: false };
+
+    res.json(trackData);
   } catch (error) {
     console.error("Error:", error.message);
-    res.json({ isPlaying: false });
+    res.json(lastTrack || { isPlaying: false });
   }
 });
 
