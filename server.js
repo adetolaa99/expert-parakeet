@@ -77,6 +77,12 @@ app.get("/api/now-playing", async (req, res) => {
   }
 });
 
+app.get("/api/config", (req, res) => {
+  res.json({
+    userApi: process.env.API_BASE || "",
+  });
+});
+
 app.listen(PORT, () => {
   console.log(`The server is running on port ${PORT}`);
 });

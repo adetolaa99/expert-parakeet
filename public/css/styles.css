@@ -24,6 +24,15 @@ body {
   letter-spacing: 0.5px;
 }
 
+#status-text {
+  text-align: center;
+  font-size: 14px;
+  color: #999;
+  font-style: italic;
+  margin-bottom: 16px;
+  min-height: 20px;
+}
+
 .container {
   max-width: 500px;
   width: 100%;

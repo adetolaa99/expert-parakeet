@@ -1,4 +1,25 @@
+async function initAnalytics() {
+  try {
+    const configResponse = await fetch("/api/config");
+    const config = await configResponse.json();
+
+    if (!config.userApi) return;
+
+    await fetch(`${config.userApi}/visitor/track`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Screen-Resolution": `${window.screen.width}x${window.screen.height}`,
+        Timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+      },
+    });
+  } catch (e) {}
+}
+
+window.addEventListener("load", initAnalytics);
+
 const player = document.getElementById("player");
+const statusText = document.getElementById("status-text");
 
 async function fetchNowPlaying() {
   try {
@@ -9,36 +30,35 @@ async function fetchNowPlaying() {
       const progress = data.isPlaying
         ? (data.progress / data.duration) * 100
         : 0;
-      const statusText = data.isPlaying
-        ? ""
-        : '<div style="color: #999; font-size: 14px; margin-top: 12px; font-style: italic;">last seen listening to...</div>';
+
+      statusText.textContent = data.isPlaying ? "" : "last seen listening to";
 
       player.innerHTML = `
-        <div class="track">
-          <img src="${data.albumArt}" alt="${
+    <div class="track">
+      <img src="${data.albumArt}" alt="${
         data.album
       }" class="album-art" style="${data.isPlaying ? "" : "opacity: 0.7;"}">
-          <div class="track-info">
-            <div class="track-title" style="${
-              data.isPlaying ? "" : "color: #999;"
-            }">${data.title}</div>
-            <div class="track-artist" style="${
-              data.isPlaying ? "" : "color: #777;"
-            }">${data.artist}</div>
-            ${
-              data.isPlaying
-                ? `
-              <div class="progress-bar">
-                <div class="progress-fill" style="width: ${progress}%"></div>
-              </div>
-            `
-                : ""
-            }
-            ${statusText}
+      <div class="track-info">
+        <div class="track-title" style="${
+          data.isPlaying ? "" : "color: #999;"
+        }">${data.title}</div>
+        <div class="track-artist" style="${
+          data.isPlaying ? "" : "color: #777;"
+        }">${data.artist}</div>
+        ${
+          data.isPlaying
+            ? `
+          <div class="progress-bar">
+            <div class="progress-fill" style="width: ${progress}%"></div>
           </div>
-        </div>
-      `;
+        `
+            : ""
+        }
+      </div>
+    </div>
+  `;
     } else {
+      statusText.textContent = "";
       player.innerHTML = `
         <div class="not-playing">
           <svg fill="currentColor" viewBox="0 0 24 24">
