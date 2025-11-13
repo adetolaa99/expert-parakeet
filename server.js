@@ -77,6 +77,10 @@ app.get("/api/now-playing", async (req, res) => {
   }
 });
 
+app.get("/ping", (req, res) => {
+  res.status(200).send("OK");
+});
+
 app.get("/api/config", (req, res) => {
   res.json({
     userApi: process.env.API_BASE || "",
