@@ -1,2 +1,2 @@
-# expert-parakeet
+# musical-guacamole
 see what i'm currently listening to and be blessed by my amazing music taste :)
